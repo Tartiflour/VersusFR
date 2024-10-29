@@ -29,7 +29,7 @@ const images = [
 
 let currentIndex = 0;
 
-// Précharger les images
+// Précharger toutes les images
 const preloadImages = (srcArray) => {
     const preloadedImages = [];
     srcArray.forEach((src) => {
@@ -38,6 +38,17 @@ const preloadImages = (srcArray) => {
         preloadedImages.push(img);
     });
     return preloadedImages;
+};
+
+// Charger la première image au démarrage
+const preloadFirstImage = () => {
+    const img = new Image();
+    img.src = images[0];
+    img.onload = () => {
+        imgElement.src = img.src;
+        imgElement.style.opacity = 1;
+        hideLoadingSpinner();
+    };
 };
 
 const preloadedImages = preloadImages(images);
@@ -62,6 +73,12 @@ const updateImage = () => {
     }, 500);
 };
 
+// Charger la première image dès le chargement de la page
+document.addEventListener('DOMContentLoaded', () => {
+    showLoadingSpinner();
+    preloadFirstImage();
+});
+
 const goToNextImage = () => {
     if (currentIndex < images.length - 1) {
         currentIndex++;
@@ -79,7 +96,7 @@ const goToPreviousImage = () => {
 btnRight.addEventListener('click', goToNextImage);
 btnLeft.addEventListener('click', goToPreviousImage);
 
-// Ajouter des écouteurs d'événements pour les touches du clavier
+// Écouteur pour les touches de navigation (gauche/droite)
 document.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowRight') {
         goToNextImage();
@@ -88,7 +105,7 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-// Ajouter des écouteurs d'événements pour les clics sur l'écran pour la version mobile
+// Écouteur pour les clics sur écran (pour mobile)
 document.addEventListener('click', (event) => {
     const screenWidth = window.innerWidth;
     const clickX = event.clientX;
@@ -99,3 +116,4 @@ document.addEventListener('click', (event) => {
         goToPreviousImage();
     }
 });
+
